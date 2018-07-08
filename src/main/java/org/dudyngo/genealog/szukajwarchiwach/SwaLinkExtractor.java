@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import com.sun.org.apache.bcel.internal.generic.InstructionList;
-
 public class SwaLinkExtractor {
 	public static Optional<URL> findImageUrl(URL scanUrl) {
 		String imageId = scanUrl.getRef().replace("select", "");
@@ -18,7 +16,9 @@ public class SwaLinkExtractor {
 			String big = medium.replace("/medium/", "/img/");
 			return Optional.of(new URL(scanUrl.getProtocol(), scanUrl.getHost(), big));
 		} catch (IOException e) {
-			e.printStackTrace();
+			return Optional.empty();
+		} catch (NullPointerException npe) {
+			System.err.println(scanUrl.toString());
 			return Optional.empty();
 		}
 	}

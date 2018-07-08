@@ -3,10 +3,12 @@ package org.dudyngo.genealog;
 import static java.util.Comparator.comparing;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.dudyngo.genealog.basia.BasiaConnector;
 import org.dudyngo.genealog.domain.GenealogicalRecord;
-import org.dudyngo.genealog.output.ResultPrinter;
+import org.dudyngo.genealog.output.ResultConsumer;
+import org.dudyngo.genealog.output.ResultConsumerFactory;
 
 public class GenealogApplication {
 
@@ -14,10 +16,12 @@ public class GenealogApplication {
 		printWelcomeMessage();
 
 		BasiaConnector basia = new BasiaConnector();
-		ResultPrinter printer = new ResultPrinter(System.out);
 
 		Collection<GenealogicalRecord> resultList = basia.fetchBasiaRecords();
-		printer.printResults(resultList);
+
+		ResultConsumerFactory resultConsumerFactory = new ResultConsumerFactory();
+		Optional<ResultConsumer> consumer = resultConsumerFactory.getBasedOnConfig();
+		consumer.ifPresent(c -> c.consume(resultList));
 	}
 
 	private static void printWelcomeMessage() {

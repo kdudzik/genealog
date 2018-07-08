@@ -1,22 +1,33 @@
 package org.dudyngo.genealog.domain;
 
 import java.net.URL;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
+import org.dudyngo.genealog.basia.RecordFiller;
+import org.jsoup.nodes.Element;
 
-public class GenealogicalRecord {
+public abstract class GenealogicalRecord {
 
 	private String place;
 	private RecordType type;
-	private String firstName;
-	private String parents;
 	private Integer year;
 	private URL scanUrl;
+	private URL url;
 
-	public GenealogicalRecord() {
+	public GenealogicalRecord(RecordType type) {
+		this.type = type;
+	}
+
+	public abstract RecordFiller getBasiaRecordFiller(Element element);
+
+	public abstract String getPersonalDataSummary();
+
+	public static GenealogicalRecord forType(RecordType type) {
+		switch (type) {
+		case MARRIAGE:
+			return new MarriageRecord();
+		default:
+			return new SinglePersonRecord(type);
+		}
 	}
 
 	public void setPlace(String place) {
@@ -35,22 +46,6 @@ public class GenealogicalRecord {
 		return type;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setParents(String parents) {
-		this.parents = parents;
-	}
-
-	public String getParents() {
-		return parents;
-	}
-
 	public void setYear(Integer year) {
 		this.year = year;
 	}
@@ -65,5 +60,13 @@ public class GenealogicalRecord {
 
 	public URL getScanUrl() {
 		return scanUrl;
+	}
+
+	public void setUrl(URL url) {
+		this.url = url;
+	}
+
+	public URL getUrl() {
+		return url;
 	}
 }
