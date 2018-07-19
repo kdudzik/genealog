@@ -27,7 +27,7 @@ public class SinglePersonRecord extends GenealogicalRecord {
 	}
 
 	@Override
-	public String getPersonalDataSummary() {
+	public String getPersonalDataDetails() {
 		return Joiner.on(" - ")
 				.skipNulls()
 				.join(
@@ -35,5 +35,11 @@ public class SinglePersonRecord extends GenealogicalRecord {
 						person.getFather(),
 						person.getMother()
 				);
+
+	}
+
+	@Override
+	public String getPersonalDataSummary() {
+		return person.toString();
 	}
 }

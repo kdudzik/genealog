@@ -34,6 +34,11 @@ public class MarriageRecord extends GenealogicalRecord {
 	}
 
 	@Override
+	public String getPersonalDataDetails() {
+		return "Marriage details";
+	}
+
+	@Override
 	public String getPersonalDataSummary() {
 		return "Marriage";
 	}

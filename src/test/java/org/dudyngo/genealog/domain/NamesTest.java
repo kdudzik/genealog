@@ -10,6 +10,7 @@ public class NamesTest {
 	public void sex() {
 		assertEquals(Sex.WOMAN, Names.sex("Maria"));
 		assertEquals(Sex.WOMAN, Names.sex("Jadwiga"));
+		assertEquals(Sex.WOMAN, Names.sex("Agnes"));
 		assertEquals(Sex.MAN, Names.sex("Andrzej"));
 		assertEquals(Sex.MAN, Names.sex("Bonawentura"));
 		assertEquals(Sex.MAN, Names.sex("Jan"));

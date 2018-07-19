@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 
 public final class Names {
 
-	private static final List<String> MALE_NAMES_ENDING_WITH_A = newArrayList("Kosma", "Bonawentura");
+	private static final List<String> MALE_NAMES_ENDING_WITH_A =
+			ImmutableList.of("Kosma", "Bonawentura");
+	private static final List<String> FEMALE_NAMES_NOT_ENDING_WITH_A =
+			ImmutableList.of("Agnes");
 
 	private Names() {
 	}
@@ -18,6 +21,8 @@ public final class Names {
 	public static Sex sex(String name) {
 		if (MALE_NAMES_ENDING_WITH_A.contains(name)) {
 			return Sex.MAN;
+		} else if (FEMALE_NAMES_NOT_ENDING_WITH_A.contains(name)) {
+			return Sex.WOMAN;
 		} else if (name.endsWith("a")) {
 			return Sex.WOMAN;
 		} else {

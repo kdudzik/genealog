@@ -23,15 +23,8 @@ public class ResultPrinter implements ResultConsumer {
 	}
 
 	@Override
-	public void consume(Collection<GenealogicalRecord> records) {
-		records.stream()
-				.filter(record -> record.getType() != RecordType.MARRIAGE)
-				.sorted(
-						Comparator.comparing(GenealogicalRecord::getPlace)
-							.thenComparingInt(GenealogicalRecord::getYear))
-				.map(this::recordSummary)
-				.forEach(printStream::println);
-		printStream.println(records.size() + " result(s)");
+	public void consume(GenealogicalRecord record) {
+		printStream.println(this.recordSummary(record));
 	}
 
 	private String recordSummary(GenealogicalRecord record) {

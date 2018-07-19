@@ -2,7 +2,6 @@ package org.dudyngo.genealog.basia;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import org.dudyngo.genealog.domain.Names;
@@ -11,14 +10,7 @@ import org.dudyngo.genealog.domain.Sex;
 import org.dudyngo.genealog.domain.SinglePersonRecord;
 import org.jsoup.nodes.Element;
 
-import com.google.common.base.Joiner;
-
 public class SinglePersonRecordFiller extends RecordFiller {
-
-	private final Pattern twoParentsPattern =
-			Pattern.compile("rodzice:\\s+(\\S+)\\s+(\\S+)\\s*,\\s+(\\S+)\\s+(\\S+)(\\W)");
-	private final Pattern anyParentsPattern =
-			Pattern.compile("rodzice:\\s+(\\S+)\\s+(\\S+)\\s*,");
 
 	public SinglePersonRecordFiller(SinglePersonRecord record, Element container) {
 		super(record, container);
@@ -56,37 +48,48 @@ public class SinglePersonRecordFiller extends RecordFiller {
 
 	private Optional<Person> extractFather() {
 		String text = leftBox.text();
-		Matcher matcher = anyParentsPattern.matcher(text);
+		Matcher matcher = RecordRegexes.ONE_PARENT_PATTERN.matcher(text);
 		if (matcher.find()) {
 			String firstName = matcher.group(1);
 			if (Names.sex(firstName) == Sex.WOMAN) {
 				return Optional.empty();
 			} else {
-				Person father = Person.man(matcher.group(1), matcher.group(2));
-				return Optional.of(father);
+				return Optional.of(Person.man(matcher.group(1), matcher.group(2)));
 			}
-		} else {
-			return Optional.empty();
 		}
+
+		matcher = RecordRegexes.ONE_PARENT_WITHOUT_SURNAME_PATTERN.matcher(text);
+		if (matcher.find()) {
+			String firstName = matcher.group(1);
+			if (Names.sex(firstName) == Sex.WOMAN) {
+				return Optional.empty();
+			} else {
+				return Optional.of(Person.man(matcher.group(1), null));
+			}
+		}
+		return Optional.empty();
 	}
 
 	private Optional<Person> extractMother() {
 		String text = leftBox.text();
-		Matcher matcher = twoParentsPattern.matcher(text);
+		Matcher matcher = RecordRegexes.TWO_PARENTS_PATTERN.matcher(text);
 		if (matcher.find()) {
-			Person mother = Person.woman(matcher.group(3), matcher.group(4));
-			return Optional.of(mother);
-		} else {
-			matcher = anyParentsPattern.matcher(text);
-			if (matcher.find()) {
-				String firstName = matcher.group(1);
-				if (Names.sex(firstName) == Sex.WOMAN) {
-					Person mother = Person.woman(matcher.group(1), matcher.group(2));
-					return Optional.of(mother);
-				}
-			}
-			return Optional.empty();
+			return Optional.of(Person.woman(matcher.group(3), matcher.group(4)));
 		}
+
+		matcher = RecordRegexes.TWO_PARENTS_WITHOUT_SECOND_SURNAME_PATTERN.matcher(text);
+		if (matcher.find()) {
+			return Optional.of(Person.woman(matcher.group(3), null));
+		}
+
+		matcher = RecordRegexes.ONE_PARENT_PATTERN.matcher(text);
+		if (matcher.find()) {
+			String firstName = matcher.group(1);
+			if (Names.sex(firstName) == Sex.WOMAN) {
+				return Optional.of(Person.woman(matcher.group(1), matcher.group(2)));
+			}
+		}
+		return Optional.empty();
 	}
 
 	private String extractFirstName() {

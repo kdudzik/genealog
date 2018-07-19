@@ -5,6 +5,8 @@ import java.net.URL;
 import org.dudyngo.genealog.basia.RecordFiller;
 import org.jsoup.nodes.Element;
 
+import com.google.common.base.Joiner;
+
 public abstract class GenealogicalRecord {
 
 	private String place;
@@ -20,6 +22,8 @@ public abstract class GenealogicalRecord {
 	public abstract RecordFiller getBasiaRecordFiller(Element element);
 
 	public abstract String getPersonalDataSummary();
+
+	public abstract String getPersonalDataDetails();
 
 	public static GenealogicalRecord forType(RecordType type) {
 		switch (type) {
